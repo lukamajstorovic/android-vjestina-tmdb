@@ -1,11 +1,7 @@
 package agency.five.codebase.android.movieapp.ui.component
 
 import agency.five.codebase.android.movieapp.mock.MoviesMock
-import agency.five.codebase.android.movieapp.model.Crewman
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,23 +13,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+data class CrewItemViewState(
+    val name: String,
+    val job: String,
+)
 
 @Composable
 fun CrewItem(
-    crewItemViewState: Crewman,
+    crewItemViewState: CrewItemViewState,
     modifier: Modifier = Modifier,
 ) {
-    Column {
+    Column(modifier = modifier) {
         Text(
             text = crewItemViewState.name,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = FontFamily.Serif,
             color = Color.Black,
-            modifier = Modifier
-                .padding(start = 10.dp, top = 5.dp)
-                .width(140.dp)
-                .height(20.dp)
         )
         Text(
             text = crewItemViewState.job,
@@ -41,21 +37,20 @@ fun CrewItem(
             fontStyle = FontStyle.Italic,
             fontFamily = FontFamily.Serif,
             color = Color.Black,
-            modifier = Modifier
-                .padding(start = 10.dp, top = 5.dp)
-                .width(140.dp)
-                .height(20.dp)
         )
     }
 }
-@Preview
+
+@Preview(showBackground = true)
 @Composable
 private fun CrewItemPreview() {
+    val crewItemInstance = MoviesMock.getCrewman()
     CrewItem(
-        crewItemViewState = Crewman(
-            id = MoviesMock.getCrewman().id,
-            name = MoviesMock.getCrewman().name,
-            job = MoviesMock.getCrewman().job
-        )
+        crewItemViewState = CrewItemViewState(
+            name = crewItemInstance.name,
+            job = crewItemInstance.job
+        ),
+        modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp)
     )
 }

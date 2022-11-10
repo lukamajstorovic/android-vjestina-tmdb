@@ -10,44 +10,48 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+data class UserScoreProgressBarViewState(
+    val score: Float
+)
 
 @Composable
 fun UserScoreProgressBar(
-    score: Float,
+    userScoreProgressBarViewState: UserScoreProgressBarViewState,
     modifier: Modifier = Modifier
 ) {
-    Box{
+    Box(
+        modifier = modifier
+    ) {
         CircularProgressIndicator(
-            progress = score,
+            progress = userScoreProgressBarViewState.score,
             color = Color.Black,
-            modifier = modifier
+            modifier = Modifier
                 .width(40.dp)
                 .height(40.dp),
 
             )
         Text(
-            text = (score * 10).toString(),
+            text = (userScoreProgressBarViewState.score * 10).toString(),
             fontSize = 14.sp,
-            modifier = modifier
+            modifier = Modifier
                 .padding(10.dp)
         )
-    }
-    Box {
         CircularProgressIndicator(
             progress = 1f,
             color = Color.Black.copy(0.7f),
-            modifier = modifier
+            modifier = Modifier
                 .width(40.dp)
                 .height(40.dp),
-            )
-
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun UserScoreProgressBarPreview(){
+fun UserScoreProgressBarPreview() {
     UserScoreProgressBar(
-        score = 0.75f
+        userScoreProgressBarViewState = UserScoreProgressBarViewState(
+            score = 0.75f
+        )
     )
 }
