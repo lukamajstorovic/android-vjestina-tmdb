@@ -32,6 +32,7 @@ fun MovieCategoryLabel(
 ) {
     Column(
         modifier = modifier
+            .clickable { onClick() }
     ) {
         Text(
             text =
@@ -45,7 +46,6 @@ fun MovieCategoryLabel(
             color = if (movieCategoryLabelViewState.isSelected) Color.Black else Color.Gray,
             fontSize = 16.sp,
             modifier = Modifier
-                .clickable { onClick() }
                 .fillMaxWidth()
         )
 
