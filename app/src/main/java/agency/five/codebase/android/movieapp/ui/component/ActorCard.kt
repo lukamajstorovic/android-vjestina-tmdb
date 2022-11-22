@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 data class ActorCardViewState(
+    val id: Int,
     val imageUrl: String?,
     val name: String,
     val character: String,
@@ -43,7 +44,10 @@ fun ActorCard(
                     .height(200.dp)
             )
             Column(
-                modifier = Modifier.align(Alignment.BottomStart)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .background(Color.Black.copy(0.7f))
+                    .fillMaxWidth()
             ) {
                 Text(
                     text = actorCardViewState.name,
@@ -52,9 +56,7 @@ fun ActorCard(
                     fontFamily = FontFamily.Serif,
                     color = Color.White,
                     modifier = Modifier
-                        .background(Color.Black.copy(0.7f))
                         .padding(start = 10.dp, top = 5.dp)
-                        .fillMaxWidth()
                 )
                 Text(
                     text = actorCardViewState.character,
@@ -63,9 +65,7 @@ fun ActorCard(
                     fontFamily = FontFamily.Serif,
                     color = Color.White,
                     modifier = Modifier
-                        .background(Color.Black.copy(0.7f))
                         .padding(start = 10.dp, bottom = 10.dp)
-                        .fillMaxWidth()
                 )
             }
         }
@@ -79,6 +79,7 @@ private fun ActorCardPreview() {
     val actorInstance = MoviesMock.getActor()
     ActorCard(
         actorCardViewState = ActorCardViewState(
+            id = actorInstance.id,
             imageUrl = actorInstance.imageUrl,
             name = actorInstance.name,
             character = actorInstance.character

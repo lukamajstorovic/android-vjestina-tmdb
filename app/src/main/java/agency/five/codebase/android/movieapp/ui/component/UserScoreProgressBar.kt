@@ -23,22 +23,23 @@ fun UserScoreProgressBar(
         modifier = modifier
     ) {
         CircularProgressIndicator(
-            progress = userScoreProgressBarViewState.score,
-            color = Color.Black,
+            progress = userScoreProgressBarViewState.score / 10,
+            color = Color.White,
             modifier = Modifier
                 .width(40.dp)
                 .height(40.dp),
 
             )
         Text(
-            text = (userScoreProgressBarViewState.score * 10).toString(),
+            text = (userScoreProgressBarViewState.score).toString(),
             fontSize = 14.sp,
+            color = Color.White,
             modifier = Modifier
                 .padding(10.dp)
         )
         CircularProgressIndicator(
             progress = 1f,
-            color = Color.Black.copy(0.7f),
+            color = Color.White.copy(0.5f),
             modifier = Modifier
                 .width(40.dp)
                 .height(40.dp),
@@ -51,7 +52,7 @@ fun UserScoreProgressBar(
 fun UserScoreProgressBarPreview() {
     UserScoreProgressBar(
         userScoreProgressBarViewState = UserScoreProgressBarViewState(
-            score = 0.75f
+            score = 7.5f
         )
     )
 }
