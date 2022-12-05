@@ -5,15 +5,14 @@ import agency.five.codebase.android.movieapp.ui.component.MovieCardViewState
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesMovieViewState
 import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewState
 
-class FavoritesMapperImpl: FavoritesMapper {
+class FavoritesMapperImpl : FavoritesMapper {
     override fun toFavoritesViewState(favoriteMovies: List<Movie>): FavoritesViewState {
-        val favoriteMoviesViewStateCollection = mutableListOf<FavoritesMovieViewState>()
-        for (favoriteMovie in favoriteMovies)
-            favoriteMoviesViewStateCollection.add(mapMovie(favoriteMovie))
+        val favoriteMoviesViewStateCollection = favoriteMovies.map { mapMovie(it) }
         return FavoritesViewState(
             favoriteMoviesViewStateCollection = favoriteMoviesViewStateCollection
         )
     }
+
     private fun mapMovie(movie: Movie): FavoritesMovieViewState {
         return FavoritesMovieViewState(
             id = movie.id,

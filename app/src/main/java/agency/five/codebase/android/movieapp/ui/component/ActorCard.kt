@@ -26,6 +26,9 @@ data class ActorCardViewState(
     val character: String,
 )
 
+const val TRANSPARENCY: Float = 0.7f
+const val ROUNDED_CORNER_PERCENT: Int = 13
+
 @Composable
 fun ActorCard(
     actorCardViewState: ActorCardViewState,
@@ -33,7 +36,7 @@ fun ActorCard(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(13)
+        shape = RoundedCornerShape(ROUNDED_CORNER_PERCENT)
     ) {
         Box {
             AsyncImage(
@@ -46,7 +49,7 @@ fun ActorCard(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .background(Color.Black.copy(0.7f))
+                    .background(Color.Black.copy(TRANSPARENCY))
                     .fillMaxWidth()
             ) {
                 Text(

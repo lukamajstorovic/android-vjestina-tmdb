@@ -1,5 +1,6 @@
 package agency.five.codebase.android.movieapp.ui.moviedetails
 
+import agency.five.codebase.android.movieapp.R
 import agency.five.codebase.android.movieapp.mock.MoviesMock
 import agency.five.codebase.android.movieapp.ui.component.*
 import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,13 +26,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
+const val GRID_COUNT: Int = 3
+const val CREW_COUNT: Int = 6
+
 private val movieDetailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
 
 val movieDetailsViewState = movieDetailsMapper.toMovieDetailsViewState(MoviesMock.getMovieDetails())
 
 @Composable
 fun MovieDetailsRoute(
-    onClickFavoriteButton: () -> Unit
+    onClickFavoriteButton: (Int) -> Unit
 ) {
     val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
     MovieDetailsScreen(
@@ -44,28 +49,32 @@ fun MovieDetailsRoute(
 private fun MovieDetailsScreen(
     modifier: Modifier,
     movieDetailsViewState: MovieDetailsViewState,
-    onClickFavoriteButton: () -> Unit
+    onClickFavoriteButton: (Int) -> Unit
 ) {
     Column {
         MovieImage(
             modifier = Modifier,
-            movieDetailsViewState = movieDetailsViewState,
+            id = movieDetailsViewState.id,
+            imageUrl = movieDetailsViewState.imageUrl,
+            title = movieDetailsViewState.title,
+            voteAverage = movieDetailsViewState.voteAverage,
+            isFavorite = movieDetailsViewState.isFavorite,
             onClickFavoriteButton = onClickFavoriteButton
         )
         Overview(
             modifier = Modifier
                 .padding(bottom = 10.dp),
-            movieDetailsViewState = movieDetailsViewState
+            overview = movieDetailsViewState.overview
         )
         Crew(
             modifier = Modifier
                 .padding(start = 10.dp, bottom = 10.dp),
-            movieDetailsViewState = movieDetailsViewState
+            crew = movieDetailsViewState.crew
         )
         Cast(
             modifier = Modifier
                 .padding(bottom = 10.dp),
-            movieDetailsViewState = movieDetailsViewState
+            cast = movieDetailsViewState.cast
         )
     }
 }
@@ -73,29 +82,33 @@ private fun MovieDetailsScreen(
 @Composable
 private fun MovieImage(
     modifier: Modifier,
-    movieDetailsViewState: MovieDetailsViewState,
-    onClickFavoriteButton: () -> Unit
+    id: Int,
+    imageUrl: String?,
+    title: String,
+    voteAverage: Float,
+    isFavorite: Boolean,
+    onClickFavoriteButton: (Int) -> Unit
 ) {
     Box(
 
     ) {
         AsyncImage(
-            model = movieDetailsViewState.imageUrl,
-            contentDescription = movieDetailsViewState.title,
+            model = imageUrl,
+            contentDescription = title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
-                .height(370.dp)
+                .height(300.dp)
         )
         FavoriteButton(
-            isFavorite = movieDetailsViewState.isFavorite,
+            isFavorite = isFavorite,
             modifier = Modifier
                 .size(40.dp),
-            onClick = { onClickFavoriteButton() }
+            onClick = { onClickFavoriteButton(id) }
         )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .background(Color.Black.copy(0.7f))
+                .background(Color.Black.copy(TRANSPARENCY))
                 .fillMaxWidth()
         ) {
             Row(
@@ -104,13 +117,13 @@ private fun MovieImage(
             ) {
                 UserScoreProgressBar(
                     userScoreProgressBarViewState = UserScoreProgressBarViewState(
-                        score = movieDetailsViewState.voteAverage
+                        score = voteAverage
                     ),
                     modifier = Modifier
                         .padding(start = 10.dp, top = 5.dp)
                 )
                 Text(
-                    text = "User score",
+                    text = stringResource(R.string.user_score),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = FontFamily.Serif,
@@ -120,7 +133,7 @@ private fun MovieImage(
                 )
             }
             Text(
-                text = movieDetailsViewState.title,
+                text = title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
                 fontFamily = FontFamily.Serif,
@@ -135,13 +148,13 @@ private fun MovieImage(
 @Composable
 private fun Overview(
     modifier: Modifier,
-    movieDetailsViewState: MovieDetailsViewState,
+    overview: String,
 ) {
     Column(
         modifier = modifier
     ) {
         Text(
-            text = "Overview",
+            text = stringResource(R.string.overview),
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = FontFamily.Serif,
@@ -150,7 +163,7 @@ private fun Overview(
                 .padding(start = 10.dp, top = 5.dp)
         )
         Text(
-            text = movieDetailsViewState.overview,
+            text = overview,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = FontFamily.Serif,
@@ -164,18 +177,20 @@ private fun Overview(
 @Composable
 private fun Crew(
     modifier: Modifier,
-    movieDetailsViewState: MovieDetailsViewState,
+    crew: List<CrewItemViewState>
 ) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Fixed(3),
-        content = {
-            items(
-                items = movieDetailsViewState.crew,
-                key = { crewman ->
-                    crewman.id
-                }
-            ) { crewItemInstance ->
+        columns = GridCells.Fixed(GRID_COUNT),
+        userScrollEnabled = false,
+    ) {
+        items(
+            items = crew,
+            key = { crewman ->
+                crewman.id
+            }
+        ) { crewItemInstance ->
+            if (crewItemInstance.id < CREW_COUNT) {
                 CrewItem(
                     crewItemViewState = CrewItemViewState(
                         id = crewItemInstance.id,
@@ -187,19 +202,19 @@ private fun Crew(
                 )
             }
         }
-    )
+    }
 }
 
 @Composable
 private fun Cast(
     modifier: Modifier,
-    movieDetailsViewState: MovieDetailsViewState
+    cast: List<ActorCardViewState>
 ) {
     Column(
         modifier = modifier,
     ) {
         Text(
-            text = "Top Billed Cast",
+            text = stringResource(R.string.top_billed_cast),
             fontSize = 17.sp,
             fontWeight = FontWeight.SemiBold,
             fontFamily = FontFamily.Serif,
@@ -207,27 +222,25 @@ private fun Cast(
             modifier = Modifier
                 .padding(start = 10.dp, top = 5.dp, bottom = 5.dp)
         )
-        LazyRow(
-            content = {
-                items(
-                    items = movieDetailsViewState.cast,
-                    key = { actor ->
-                        actor.id
-                    }
-                ) { actorInstance ->
-                    ActorCard(
-                        actorCardViewState = ActorCardViewState(
-                            id = actorInstance.id,
-                            imageUrl = actorInstance.imageUrl,
-                            name = actorInstance.name,
-                            character = actorInstance.character
-                        ),
-                        modifier = Modifier
-                            .padding(start = 5.dp, end = 5.dp)
-                    )
+        LazyRow {
+            items(
+                items = cast,
+                key = { actor ->
+                    actor.id
                 }
+            ) { actorInstance ->
+                ActorCard(
+                    actorCardViewState = ActorCardViewState(
+                        id = actorInstance.id,
+                        imageUrl = actorInstance.imageUrl,
+                        name = actorInstance.name,
+                        character = actorInstance.character
+                    ),
+                    modifier = Modifier
+                        .padding(start = 5.dp, end = 5.dp)
+                )
             }
-        )
+        }
     }
 }
 

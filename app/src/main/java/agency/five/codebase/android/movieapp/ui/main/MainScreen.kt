@@ -37,17 +37,19 @@ import androidx.compose.ui.graphics.Color
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    var showBottomBar by remember { mutableStateOf(true) }
-    var showBackIcon = !showBottomBar
+    val showBottomBar by remember {
+        derivedStateOf {
+            navBackStackEntry?.destination?.route == NavigationItem.HomeDestination.route ||
+                    navBackStackEntry?.destination?.route == NavigationItem.FavoritesDestination.route
+        }
+    }
+    val showBackIcon = !showBottomBar
     Scaffold(
         topBar = {
             TopBar(
                 navigationIcon = {
                     if (showBackIcon) {
-                        BackIcon(onBackClick = {
-                            navController.popBackStack()
-                            showBottomBar = !showBottomBar
-                        })
+                        BackIcon(onBackClick = navController::navigateUp)
                     }
                 }
             )
@@ -83,11 +85,10 @@ fun MainScreen() {
                     NavigationItem.HomeDestination.route
                 ) {
                     HomeRoute(
-                        onClickCard = {
+                        openMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
                         onClickFavoriteButton = {}
                     )
@@ -96,13 +97,11 @@ fun MainScreen() {
                     NavigationItem.FavoritesDestination.route
                 ) {
                     FavoritesRoute(
-                        onClickCard = {
+                        openMovieDetails = {
                             navController.navigate(
-                                MovieDetailsDestination.createNavigationRoute(1)
+                                MovieDetailsDestination.createNavigationRoute(it)
                             )
-                            showBottomBar = !showBottomBar
                         },
-                        onClickFavoriteButton = {},
                     )
                 }
                 composable(
