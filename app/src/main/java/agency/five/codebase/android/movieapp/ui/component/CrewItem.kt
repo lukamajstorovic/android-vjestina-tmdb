@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 data class CrewItemViewState(
+    val id: Int,
     val name: String,
     val job: String,
 )
@@ -47,6 +48,7 @@ private fun CrewItemPreview() {
     val crewItemInstance = MoviesMock.getCrewman()
     CrewItem(
         crewItemViewState = CrewItemViewState(
+            id = crewItemInstance.id,
             name = crewItemInstance.name,
             job = crewItemInstance.job
         ),
