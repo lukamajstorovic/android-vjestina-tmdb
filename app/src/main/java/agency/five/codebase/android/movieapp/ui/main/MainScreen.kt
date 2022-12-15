@@ -30,7 +30,12 @@ import coil.compose.AsyncImage
 import agency.five.codebase.android.movieapp.navigation.MOVIE_ID_KEY
 import agency.five.codebase.android.movieapp.navigation.MovieDetailsDestination
 import agency.five.codebase.android.movieapp.navigation.NavigationItem
+import agency.five.codebase.android.movieapp.ui.favorites.FavoritesViewModel
+import agency.five.codebase.android.movieapp.ui.home.HomeViewModel
+import agency.five.codebase.android.movieapp.ui.moviedetails.MovieDetailsViewModel
 import androidx.compose.ui.graphics.Color
+import org.koin.androidx.compose.getViewModel
+import org.koin.core.parameter.parametersOf
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -84,32 +89,38 @@ fun MainScreen() {
                 composable(
                     NavigationItem.HomeDestination.route
                 ) {
+                    val viewModel: HomeViewModel = getViewModel()
                     HomeRoute(
                         openMovieDetails = {
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(it)
                             )
                         },
-                        onClickFavoriteButton = {}
+                        viewModel = viewModel
                     )
                 }
                 composable(
                     NavigationItem.FavoritesDestination.route
                 ) {
+                    val viewModel: FavoritesViewModel = getViewModel()
                     FavoritesRoute(
                         openMovieDetails = {
                             navController.navigate(
                                 MovieDetailsDestination.createNavigationRoute(it)
                             )
                         },
+                        viewModel = viewModel
                     )
                 }
                 composable(
                     route = MovieDetailsDestination.route,
                     arguments = listOf(navArgument(MOVIE_ID_KEY) { type = NavType.IntType }),
                 ) {
+                    val movieId = it.arguments?.getInt(MOVIE_ID_KEY)
+                    val viewModel =
+                        getViewModel<MovieDetailsViewModel>(parameters = { parametersOf(movieId) })
                     MovieDetailsRoute(
-                        onClickFavoriteButton = {}
+                        viewModel = viewModel
                     )
                 }
             }

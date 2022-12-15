@@ -12,7 +12,6 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,13 +34,13 @@ val movieDetailsViewState = movieDetailsMapper.toMovieDetailsViewState(MoviesMoc
 
 @Composable
 fun MovieDetailsRoute(
-    onClickFavoriteButton: (Int) -> Unit
+    viewModel: MovieDetailsViewModel
 ) {
-    val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
+    val movieDetailsViewState: MovieDetailsViewState by viewModel.movieDetailsViewState.collectAsState()
     MovieDetailsScreen(
         modifier = Modifier,
         movieDetailsViewState = movieDetailsViewState,
-        onClickFavoriteButton = onClickFavoriteButton
+        onClickFavoriteButton = { movieId -> viewModel.toggleFavorite(movieId) }
     )
 }
 
@@ -61,6 +60,7 @@ private fun MovieDetailsScreen(
             isFavorite = movieDetailsViewState.isFavorite,
             onClickFavoriteButton = onClickFavoriteButton
         )
+
         Overview(
             modifier = Modifier
                 .padding(bottom = 10.dp),

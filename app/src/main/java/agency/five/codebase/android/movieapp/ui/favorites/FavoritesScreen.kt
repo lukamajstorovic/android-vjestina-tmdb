@@ -9,10 +9,7 @@ import agency.five.codebase.android.movieapp.R
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -31,15 +28,16 @@ val favoritesViewState = favoritesMapper.toFavoritesViewState(MoviesMock.getMovi
 
 @Composable
 fun FavoritesRoute(
+    viewModel: FavoritesViewModel,
     openMovieDetails: (Int) -> Unit,
 ) {
-    val favoritesViewState by remember { mutableStateOf(favoritesViewState) }
+    val favoritesViewState: FavoritesViewState by viewModel.favoritesViewState.collectAsState()
 
     FavoritesScreen(
         modifier = Modifier,
         favoritesViewState = favoritesViewState,
         onClickCard = openMovieDetails,
-        onClickFavoriteButton = { }
+        onClickFavoriteButton = { movieId -> viewModel.toggleFavorite(movieId) }
     )
 }
 
