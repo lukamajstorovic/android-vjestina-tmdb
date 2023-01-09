@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
-const val GRID_COUNT: Int = 3
+const val GRID_COUNT: Int = 2
 const val CREW_COUNT: Int = 6
 
 private val movieDetailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
@@ -35,13 +36,13 @@ val movieDetailsViewState = movieDetailsMapper.toMovieDetailsViewState(MoviesMoc
 
 @Composable
 fun MovieDetailsRoute(
-    onClickFavoriteButton: (Int) -> Unit
+    viewModel: MovieDetailsViewModel
 ) {
-    val movieDetailsViewState by remember { mutableStateOf(movieDetailsViewState) }
+    val movieDetailsViewState: MovieDetailsViewState by viewModel.movieDetailsViewState.collectAsState()
     MovieDetailsScreen(
         modifier = Modifier,
         movieDetailsViewState = movieDetailsViewState,
-        onClickFavoriteButton = onClickFavoriteButton
+        onClickFavoriteButton = { movieId -> viewModel.toggleFavorite(movieId) }
     )
 }
 
@@ -51,7 +52,12 @@ private fun MovieDetailsScreen(
     movieDetailsViewState: MovieDetailsViewState,
     onClickFavoriteButton: (Int) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = modifier.verticalScroll(
+            state = rememberScrollState(),
+            enabled = true
+        )
+    ) {
         MovieImage(
             modifier = Modifier,
             id = movieDetailsViewState.id,
@@ -61,6 +67,7 @@ private fun MovieDetailsScreen(
             isFavorite = movieDetailsViewState.isFavorite,
             onClickFavoriteButton = onClickFavoriteButton
         )
+
         Overview(
             modifier = Modifier
                 .padding(bottom = 10.dp),
@@ -179,16 +186,16 @@ private fun Crew(
     modifier: Modifier,
     crew: List<CrewItemViewState>
 ) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(GRID_COUNT),
+    LazyHorizontalGrid(
+        modifier = modifier
+            .height(65.dp)
+            .fillMaxSize(),
+        rows = GridCells.Fixed(GRID_COUNT),
+        horizontalArrangement = Arrangement.SpaceBetween,
         userScrollEnabled = false,
     ) {
         items(
             items = crew,
-            key = { crewman ->
-                crewman.id
-            }
         ) { crewItemInstance ->
             if (crewItemInstance.id < CREW_COUNT) {
                 CrewItem(
@@ -225,9 +232,6 @@ private fun Cast(
         LazyRow {
             items(
                 items = cast,
-                key = { actor ->
-                    actor.id
-                }
             ) { actorInstance ->
                 ActorCard(
                     actorCardViewState = ActorCardViewState(
@@ -237,6 +241,8 @@ private fun Cast(
                         character = actorInstance.character
                     ),
                     modifier = Modifier
+                        .height(200.dp)
+                        .width(140.dp)
                         .padding(start = 5.dp, end = 5.dp)
                 )
             }

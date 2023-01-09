@@ -57,115 +57,25 @@ val initialUpcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewS
 
 @Composable
 fun HomeRoute(
+    viewModel: HomeViewModel,
     openMovieDetails: (Int) -> Unit,
-    onClickFavoriteButton: (Int) -> Unit,
 ) {
-    var popularCategoryViewState by remember { mutableStateOf(initialPopularCategoryViewState) }
-    var nowPlayingCategoryViewState by remember { mutableStateOf(initialNowPlayingCategoryViewState) }
-    var upcomingCategoryViewState by remember { mutableStateOf(initialUpcomingCategoryViewState) }
+    val popularCategoryViewState: HomeMovieCategoryViewState by viewModel
+        .popularCategoryViewState.collectAsState()
+
+    val nowPlayingCategoryViewState: HomeMovieCategoryViewState by viewModel
+        .nowPlayingCategoryViewState.collectAsState()
+
+    val upcomingCategoryViewState: HomeMovieCategoryViewState by viewModel
+        .upcomingCategoryViewState.collectAsState()
 
     HomeScreen(
         popularCategoryViewState = popularCategoryViewState,
         nowPlayingCategoryViewState = nowPlayingCategoryViewState,
         upcomingCategoryViewState = upcomingCategoryViewState,
-        onClickFavoriteButton = onClickFavoriteButton,
+        onClickFavoriteButton = { movieId -> viewModel.toggleFavorite(movieId) },
         onClickCard = openMovieDetails,
-        onClickCategory = { categoryId ->
-            when (categoryId) {
-                0 -> {
-                    popularCategoryViewState =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            movies = MoviesMock.getMoviesList(),
-                            movieCategories = listOf(
-                                MovieCategory.POPULAR_STREAMING,
-                                MovieCategory.POPULAR_ON_TV,
-                                MovieCategory.POPULAR_FOR_RENT,
-                                MovieCategory.POPULAR_IN_THEATERS,
-                            ),
-                            selectedMovieCategory = MovieCategory.POPULAR_STREAMING
-                        )
-                }
-                1 -> {
-                    popularCategoryViewState =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            movies = MoviesMock.getMoviesList(),
-                            movieCategories = listOf(
-                                MovieCategory.POPULAR_STREAMING,
-                                MovieCategory.POPULAR_ON_TV,
-                                MovieCategory.POPULAR_FOR_RENT,
-                                MovieCategory.POPULAR_IN_THEATERS,
-                            ),
-                            selectedMovieCategory = MovieCategory.POPULAR_ON_TV
-                        )
-                }
-                2 -> {
-                    popularCategoryViewState =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            movies = MoviesMock.getMoviesList(),
-                            movieCategories = listOf(
-                                MovieCategory.POPULAR_STREAMING,
-                                MovieCategory.POPULAR_ON_TV,
-                                MovieCategory.POPULAR_FOR_RENT,
-                                MovieCategory.POPULAR_IN_THEATERS,
-                            ),
-                            selectedMovieCategory = MovieCategory.POPULAR_FOR_RENT
-                        )
-                }
-                3 -> {
-                    popularCategoryViewState =
-                        homeScreenMapper.toHomeMovieCategoryViewState(
-                            movies = MoviesMock.getMoviesList(),
-                            movieCategories = listOf(
-                                MovieCategory.POPULAR_STREAMING,
-                                MovieCategory.POPULAR_ON_TV,
-                                MovieCategory.POPULAR_FOR_RENT,
-                                MovieCategory.POPULAR_IN_THEATERS,
-                            ),
-                            selectedMovieCategory = MovieCategory.POPULAR_IN_THEATERS
-                        )
-                }
-                4 -> {
-                    nowPlayingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                        movies = MoviesMock.getMoviesList(),
-                        movieCategories = listOf(
-                            MovieCategory.NOW_PLAYING_MOVIES,
-                            MovieCategory.NOW_PLAYING_TV
-                        ),
-                        selectedMovieCategory = MovieCategory.NOW_PLAYING_MOVIES
-                    )
-                }
-                5 -> {
-                    nowPlayingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                        movies = MoviesMock.getMoviesList(),
-                        movieCategories = listOf(
-                            MovieCategory.NOW_PLAYING_MOVIES,
-                            MovieCategory.NOW_PLAYING_TV
-                        ),
-                        selectedMovieCategory = MovieCategory.NOW_PLAYING_TV
-                    )
-                }
-                6 -> {
-                    upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                        movies = MoviesMock.getMoviesList(),
-                        movieCategories = listOf(
-                            MovieCategory.UPCOMING_TODAY,
-                            MovieCategory.UPCOMING_THIS_WEEK
-                        ),
-                        selectedMovieCategory = MovieCategory.UPCOMING_TODAY
-                    )
-                }
-                else -> {
-                    upcomingCategoryViewState = homeScreenMapper.toHomeMovieCategoryViewState(
-                        movies = MoviesMock.getMoviesList(),
-                        movieCategories = listOf(
-                            MovieCategory.UPCOMING_TODAY,
-                            MovieCategory.UPCOMING_THIS_WEEK
-                        ),
-                        selectedMovieCategory = MovieCategory.UPCOMING_THIS_WEEK
-                    )
-                }
-            }
-        }
+        onClickCategory = { categoryId -> viewModel.changeCategory(categoryId) }
     )
 }
 

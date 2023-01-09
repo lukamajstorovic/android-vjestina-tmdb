@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontFamily
@@ -44,13 +45,14 @@ fun ActorCard(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .height(200.dp)
+                    .fillMaxSize()
             )
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .background(Color.Black.copy(TRANSPARENCY))
                     .fillMaxWidth()
+                    .padding(start = 10.dp, end = 10.dp)
             ) {
                 Text(
                     text = actorCardViewState.name,
@@ -58,8 +60,7 @@ fun ActorCard(
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = FontFamily.Serif,
                     color = Color.White,
-                    modifier = Modifier
-                        .padding(start = 10.dp, top = 5.dp)
+                    modifier = Modifier.align(CenterHorizontally)
                 )
                 Text(
                     text = actorCardViewState.character,
@@ -67,8 +68,7 @@ fun ActorCard(
                     fontStyle = FontStyle.Italic,
                     fontFamily = FontFamily.Serif,
                     color = Color.White,
-                    modifier = Modifier
-                        .padding(start = 10.dp, bottom = 10.dp)
+                    modifier = Modifier.align(CenterHorizontally)
                 )
             }
         }
