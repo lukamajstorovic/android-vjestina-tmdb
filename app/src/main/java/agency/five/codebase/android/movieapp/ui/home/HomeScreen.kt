@@ -61,13 +61,13 @@ fun HomeRoute(
     openMovieDetails: (Int) -> Unit,
 ) {
     val popularCategoryViewState: HomeMovieCategoryViewState by viewModel
-        .popularMoviesHomeViewState.collectAsState()
+        .popularCategoryViewState.collectAsState()
 
     val nowPlayingCategoryViewState: HomeMovieCategoryViewState by viewModel
-        .nowPlayingMoviesHomeViewState.collectAsState()
+        .nowPlayingCategoryViewState.collectAsState()
 
     val upcomingCategoryViewState: HomeMovieCategoryViewState by viewModel
-        .upcomingMovieHomeViewState.collectAsState()
+        .upcomingCategoryViewState.collectAsState()
 
     HomeScreen(
         popularCategoryViewState = popularCategoryViewState,

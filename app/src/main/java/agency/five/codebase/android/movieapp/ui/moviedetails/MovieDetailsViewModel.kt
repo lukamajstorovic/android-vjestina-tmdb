@@ -4,8 +4,7 @@ import agency.five.codebase.android.movieapp.data.repository.MovieRepository
 import agency.five.codebase.android.movieapp.ui.moviedetails.mapper.MovieDetailsMapper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class MovieDetailsViewModel(
@@ -13,30 +12,34 @@ class MovieDetailsViewModel(
     private val movieRepository: MovieRepository,
     private val movieDetailsMapper: MovieDetailsMapper,
 ) : ViewModel() {
-    private val _movieDetailsViewState = MutableStateFlow(
-        MovieDetailsViewState(
-            id = 1,
-            imageUrl = null,
-            voteAverage = 0.0f,
-            title = "",
-            overview = "",
-            isFavorite = false,
-            crew = emptyList(),
-            cast = emptyList()
-        )
+    private val initialMovieDetailsViewState = MovieDetailsViewState(
+        id = 1,
+        imageUrl = null,
+        voteAverage = 0.0f,
+        title = "",
+        overview = "",
+        isFavorite = false,
+        crew = emptyList(),
+        cast = emptyList()
     )
-    val movieDetailsViewState = _movieDetailsViewState.asStateFlow()
 
-    init { getMovieDetails() }
+    private val _movieDetailsViewState = MutableStateFlow(
+        initialMovieDetailsViewState
+    )
 
-    private fun getMovieDetails() {
-        viewModelScope.launch {
-            movieRepository.movieDetails(movieId).collect { movieDetails ->
-                _movieDetailsViewState.value =
-                    movieDetailsMapper.toMovieDetailsViewState(movieDetails)
+    val movieDetailsViewState =
+        _movieDetailsViewState
+            .flatMapLatest { movie ->
+                movieRepository.movieDetails(movie.id)
+                    .map { details ->
+                        movieDetailsMapper.toMovieDetailsViewState(details)
+                    }
             }
-        }
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = initialMovieDetailsViewState
+            )
 
     fun toggleFavorite(movieId: Int) {
         viewModelScope.launch {
