@@ -13,7 +13,7 @@ class MovieDetailsViewModel(
     private val movieDetailsMapper: MovieDetailsMapper,
 ) : ViewModel() {
     private val initialMovieDetailsViewState = MovieDetailsViewState(
-        id = 1,
+        id = movieId,
         imageUrl = null,
         voteAverage = 0.0f,
         title = "",
