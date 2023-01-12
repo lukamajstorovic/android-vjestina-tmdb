@@ -11,17 +11,10 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
-const val TIMEOUT_VALUE = 100_000
-
 val networkModule = module {
     single<MovieService> { MovieServiceImpl(client = get()) }
     single {
         HttpClient(Android) {
-            expectSuccess = true
-            engine {
-                connectTimeout = TIMEOUT_VALUE
-                socketTimeout = TIMEOUT_VALUE
-            }
             install(ContentNegotiation) {
                 json(Json {
                     isLenient = true

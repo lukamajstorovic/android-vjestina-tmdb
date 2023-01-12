@@ -9,7 +9,7 @@ import agency.five.codebase.android.movieapp.model.MovieDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class MovieRepositoryImpl(
     private val movieService: MovieService,
@@ -86,7 +86,7 @@ class MovieRepositoryImpl(
     override suspend fun removeMovieFromFavorites(movieId: Int) = movieDao.deleteMovie(movieId)
 
     override suspend fun toggleFavorite(movieId: Int) {
-        runBlocking(bgDispatcher) {
+        withContext(bgDispatcher) {
             val favoriteMovies = favorites.first()
             if (favoriteMovies.any { it.id == movieId }) {
                 removeMovieFromFavorites(movieId)
@@ -97,16 +97,14 @@ class MovieRepositoryImpl(
     }
 
     private suspend fun findMovie(movieId: Int): Movie {
-        lateinit var movie: Movie
         moviesByCategory.values.forEach { value ->
             val movies = value.first()
             movies.forEach {
                 if (it.id == movieId) {
-                    movie = it
-                    return movie
+                    return it
                 }
             }
         }
-        return movie
+        throw Exception("Couldn't find the movie with that id.")
     }
 }
