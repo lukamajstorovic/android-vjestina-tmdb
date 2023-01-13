@@ -76,6 +76,7 @@ fun ActorCard(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 private fun ActorCardPreview() {

@@ -9,6 +9,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
+
+const val TRANSPARENCY_FIFTY = 0.5f
 
 data class UserScoreProgressBarViewState(
     val score: Float
@@ -31,7 +34,7 @@ fun UserScoreProgressBar(
 
             )
         Text(
-            text = (userScoreProgressBarViewState.score).toString(),
+            text = ((userScoreProgressBarViewState.score * 10.0).roundToInt() / 10.0).toString(),
             fontSize = 14.sp,
             color = Color.White,
             modifier = Modifier
@@ -39,7 +42,7 @@ fun UserScoreProgressBar(
         )
         CircularProgressIndicator(
             progress = 1f,
-            color = Color.White.copy(0.5f),
+            color = Color.White.copy(TRANSPARENCY_FIFTY),
             modifier = Modifier
                 .width(40.dp)
                 .height(40.dp),

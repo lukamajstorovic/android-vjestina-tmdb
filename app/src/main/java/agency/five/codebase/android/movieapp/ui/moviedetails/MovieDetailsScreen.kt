@@ -16,6 +16,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 const val GRID_COUNT: Int = 2
-const val CREW_COUNT: Int = 6
 
 private val movieDetailsMapper: MovieDetailsMapper = MovieDetailsMapperImpl()
 
@@ -75,7 +75,8 @@ private fun MovieDetailsScreen(
         )
         Crew(
             modifier = Modifier
-                .padding(start = 10.dp, bottom = 10.dp),
+                .padding(start = 10.dp, bottom = 10.dp)
+                .align(CenterHorizontally),
             crew = movieDetailsViewState.crew
         )
         Cast(
@@ -194,10 +195,13 @@ private fun Crew(
         horizontalArrangement = Arrangement.SpaceBetween,
         userScrollEnabled = false,
     ) {
+        var counter = 0;
         items(
             items = crew,
+            key = { item -> item.hashCode() },
         ) { crewItemInstance ->
-            if (crewItemInstance.id < CREW_COUNT) {
+            if (counter < 6) {
+                counter++
                 CrewItem(
                     crewItemViewState = CrewItemViewState(
                         id = crewItemInstance.id,

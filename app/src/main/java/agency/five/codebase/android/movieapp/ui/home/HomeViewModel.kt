@@ -3,8 +3,6 @@ package agency.five.codebase.android.movieapp.ui.home
 import agency.five.codebase.android.movieapp.data.repository.MovieRepository
 import agency.five.codebase.android.movieapp.model.MovieCategory
 import agency.five.codebase.android.movieapp.ui.home.mapper.HomeScreenMapper
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.*
@@ -38,7 +36,7 @@ class HomeViewModel(
     val popularCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
         popularMoviesCategorySelected
             .flatMapLatest { selectedMovieCategory ->
-                movieRepository.popularMovies(selectedMovieCategory)
+                movieRepository.movies(selectedMovieCategory)
                     .map { popularMovies ->
                         homeScreenMapper.toHomeMovieCategoryViewState(
                             movieCategories = popularMovieCategories,
@@ -60,10 +58,10 @@ class HomeViewModel(
     val nowPlayingCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
         nowPlayingCategorySelected
             .flatMapLatest { selectedMovieCategory ->
-                movieRepository.popularMovies(selectedMovieCategory)
+                movieRepository.movies(selectedMovieCategory)
                     .map { nowPlayingMovies ->
                         homeScreenMapper.toHomeMovieCategoryViewState(
-                            movieCategories = nowPlayingMovieCategories, // listOf(MovieCategory.POPULAR ...)
+                            movieCategories = nowPlayingMovieCategories,
                             selectedMovieCategory = selectedMovieCategory,
                             movies = nowPlayingMovies,
                         )
@@ -82,7 +80,7 @@ class HomeViewModel(
     val upcomingCategoryViewState: StateFlow<HomeMovieCategoryViewState> =
         upcomingMoviesCategorySelected
             .flatMapLatest { selectedMovieCategory ->
-                movieRepository.popularMovies(selectedMovieCategory)
+                movieRepository.movies(selectedMovieCategory)
                     .map { upcomingMovies ->
                         homeScreenMapper.toHomeMovieCategoryViewState(
                             movieCategories = upcomingMovieCategories,
